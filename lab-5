@@ -1,0 +1,255 @@
+QUESTION--1
+#include <iostream>
+using namespace std;
+
+class Fmachine {
+public:
+    
+    virtual void getdata() = 0;
+    virtual void putdata() = 0;
+
+    
+    virtual ~Fmachine() {}
+};
+
+class Aeroplane : public Fmachine {
+private:
+    int code;
+    string name;
+    int capacity;
+public:
+    void getdata() override {
+        cout << "Enter Aeroplane Code: ";
+        cin >> code;
+        cin.ignore(); // Clear newline from buffer
+        cout << "Enter Aeroplane Name: ";
+        getline(cin, name);
+        cout << "Enter Aeroplane Capacity: ";
+        cin >> capacity;
+    }
+
+    void putdata() override {
+        cout << "\n--- Aeroplane Details ---" << endl;
+        cout << "Code: " << code << endl;
+        cout << "Name: " << name << endl;
+        cout << "Capacity: " << capacity << endl;
+    }
+};
+
+
+int main() {
+   
+    Fmachine* fptr;
+    fptr = new Aeroplane();
+    fptr->getdata();
+    fptr->putdata();
+
+    delete fptr;
+
+    return 0;
+}
+
+Question-2
+#include <iostream>
+using namespace std;
+
+
+class CentralBank {
+protected:
+    float ird; // Interest rate for deposit
+    float irl; // Interest rate for loan
+
+public:
+   
+    virtual void getData() = 0;
+    virtual void displayData() = 0;
+    virtual void calculateInterestAmount(float principal, int years) = 0;
+};
+
+// Derived Class: NMB
+class NMB : public CentralBank {
+public:
+    void getData() override {
+        cout << "[NMB Bank] Enter interest rate for deposit (%): ";
+        cin >> ird;
+        cout << "[NMB Bank] Enter interest rate for loan (%): ";
+        cin >> irl;
+    }
+
+    void displayData() override {
+        cout << "[NMB Bank] Deposit Rate: " << ird << "%, Loan Rate: " << irl << "%" << endl;
+    }
+
+    void calculateInterestAmount(float principal, int years) override {
+        float depositInterest = (principal * ird * years) / 100;
+        float loanInterest = (principal * irl * years) / 100;
+        cout << "[NMB Bank] Interest on deposit: " << depositInterest << endl;
+        cout << "[NMB Bank] Interest on loan: " << loanInterest << endl;
+    }
+};
+
+// Derived Class: GlobalBank
+class GlobalBank : public CentralBank {
+public:
+    void getData() override {
+        cout << "[Global Bank] Enter interest rate for deposit (%): ";
+        cin >> ird;
+        cout << "[Global Bank] Enter interest rate for loan (%): ";
+        cin >> irl;
+    }
+
+    void displayData() override {
+        cout << "[Global Bank] Deposit Rate: " << ird << "%, Loan Rate: " << irl << "%" << endl;
+    }
+
+    void calculateInterestAmount(float principal, int years) override {
+        float depositInterest = (principal * ird * years) / 100;
+        float loanInterest = (principal * irl * years) / 100;
+        cout << "[Global Bank] Interest on deposit: " << depositInterest << endl;
+        cout << "[Global Bank] Interest on loan: " << loanInterest << endl;
+    }
+};
+
+int main() {
+    CentralBank* bank;
+
+    cout << "Choose bank (1 for NMB, 2 for GlobalBank): ";
+    int choice;
+    cin >> choice;
+
+    if (choice == 1)
+        bank = new NMB();
+    else if (choice == 2)
+        bank = new GlobalBank();
+    else {
+        cout << "Invalid choice." << endl;
+        return 0;
+    }
+
+    bank->getData();
+    bank->displayData();
+
+    float principal;
+    int years;
+
+    cout << "Enter principal amount: ";
+    cin >> principal;
+    cout << "Enter number of years: ";
+    cin >> years;
+
+    bank->calculateInterestAmount(principal, years);
+
+    delete bank; // Free the allocated memory
+    return 0;
+}
+Question-3
+#include <iostream>
+using namespace std;
+
+// a. Base class
+class Student {
+protected:
+    int rollNo;
+    string name;
+
+public:
+    void readStudent() {
+        cout << "Enter Roll Number: ";
+        cin >> rollNo;
+        cin.ignore();
+        cout << "Enter Name: ";
+        getline(cin, name);
+    }
+
+    void displayStudent() {
+        cout << "Roll Number: " << rollNo << endl;
+        cout << "Name: " << name << endl;
+    }
+};
+
+// b. Derived class Test (virtual)
+class Test : virtual public Student {
+protected:
+    float mark1, mark2;
+
+public:
+    void readMarks() {
+        cout << "Enter marks in subject 1: ";
+        cin >> mark1;
+        cout << "Enter marks in subject 2: ";
+        cin >> mark2;
+    }
+
+    void displayMarks() {
+        cout << "Marks in Subject 1: " << mark1 << endl;
+        cout << "Marks in Subject 2: " << mark2 << endl;
+    }
+};
+
+// c. Derived class Sports (virtual)
+class Sports : virtual public Student {
+protected:
+    float score;
+
+public:
+    void readScore() {
+        cout << "Enter sports score: ";
+        cin >> score;
+    }
+
+    void displayScore() {
+        cout << "Sports Score: " << score << endl;
+    }
+};
+
+// d. Derived class Result from both Test and Sports
+class Result : public Test, public Sports {
+private:
+    float total;
+
+public:
+    void computeTotal() {
+        total = mark1 + mark2 + score;
+    }
+
+    void displayResult() {
+        displayStudent();
+        displayMarks();
+        displayScore();
+        cout << "Total Score (Test + Sports): " << total << endl;
+    }
+};
+
+
+int main() {
+    Result r;
+
+    r.readStudent();     // From Student
+    r.readMarks();       // From Test
+    r.readScore();       // From Sports
+    r.computeTotal();    // Compute total
+    cout << "\n----- RESULT -----\n";
+    r.displayResult();   // Display all details
+
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
