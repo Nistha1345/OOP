@@ -1,0 +1,554 @@
+QUESTION-1
+#include <iostream>
+#include <string>
+using namespace std;
+
+class MyString {
+private:
+    string str;
+
+public:
+   
+    MyString(string s = "") {
+        str = s;
+    }
+
+    MyString operator+(const MyString& other) {
+        return MyString(str + other.str);
+    }
+
+
+    void display() const {
+        cout << str << endl;
+    }
+};
+
+int main() {
+    string input1, input2;
+
+    cout << "Enter first string: ";
+    getline(cin, input1);
+
+    cout << "Enter second string: ";
+    getline(cin, input2);
+
+    MyString s1(input1), s2(input2);
+    MyString result = s1 + s2;
+
+    cout << "Concatenated string: ";
+    result.display();
+
+    return 0;
+}
+QUESTION-2
+
+#include <iostream>
+using namespace std;
+
+
+class Lecturer {
+protected:
+    string name;
+    int id;
+public:
+    int courseId;
+    string course_Name;
+
+    void getData() {
+        cout << "Enter Lecturer Name: ";
+        cin >> name;
+        cout << "Enter Lecturer ID: ";
+        cin >> id;
+        cout << "Enter Course ID: ";
+        cin >> courseId;
+        cout << "Enter Course Name: ";
+        cin >> course_Name;
+    }
+
+    virtual void displayData() {
+        cout << "\nLecturer Details:\n";
+        cout << "Name: " << name << endl;
+        cout << "ID: " << id << endl;
+        cout << "Course ID: " << courseId << endl;
+        cout << "Course Name: " << course_Name << endl;
+    }
+};
+
+
+class PartTimeFaculty : public Lecturer {
+private:
+    float payperhour;
+public:
+    void getData() {
+        Lecturer::getData();
+        cout << "Enter Pay per Hour: ";
+        cin >> payperhour;
+    }
+
+    void displayData() override {
+        Lecturer::displayData();
+        cout << "Pay per Hour: " << payperhour << endl;
+    }
+};
+
+
+class FullTimeFaculty : public Lecturer {
+private:
+    float salary;
+public:
+    void getData() {
+        Lecturer::getData();
+        cout << "Enter Salary: ";
+        cin >> salary;
+    }
+
+    void displayData() override {
+        Lecturer::displayData();
+        cout << "Salary: " << salary << endl;
+    }
+};
+
+
+int main() {
+    Lecturer *ptr;
+
+    PartTimeFaculty ptf;
+    cout << "Enter Part-Time Faculty Details:\n";
+    ptf.getData();
+
+    FullTimeFaculty ftf;
+    cout << "\nEnter Full-Time Faculty Details:\n";
+    ftf.getData();
+
+    cout << "\n---Displaying Details Using Base Class Pointer---\n";
+    
+    ptr = &ptf;
+    ptr->displayData();
+
+    cout << endl;
+
+    ptr = &ftf;
+    ptr->displayData();
+
+    return 0;
+}
+QUESTION-3
+
+#include <iostream>
+using namespace std;
+
+// a) Student class
+class Student {
+protected:
+    string name;
+    int roll_no;
+
+public:
+    void readData() {
+        cout << "Enter student name: ";
+        getline(cin, name);
+        cout << "Enter roll number: ";
+        cin >> roll_no;
+        cin.ignore(); 
+    }
+
+    void displayData() const {
+        cout << "Name: " << name << endl;
+        cout << "Roll No: " << roll_no << endl;
+    }
+};
+
+// b) Exam class inherits Student
+class Exam : public Student {
+protected:
+    int marks[5];
+
+public:
+    void readMarks() {
+        cout << "Enter marks for 5 subjects:\n";
+        for (int i = 0; i < 5; i++) {
+            cout << "Subject " << i + 1 << ": ";
+            cin >> marks[i];
+        }
+        cin.ignore(); // clear newline
+    }
+
+    void displayMarks() const {
+        cout << "Marks in 5 subjects:\n";
+        for (int i = 0; i < 5; i++) {
+            cout << "Subject " << i + 1 << ": " << marks[i] << endl;
+        }
+    }
+};
+
+// c) Result class inherits Exam
+class Result : public Exam {
+public:
+    void displayResult() {
+        displayData();  
+        displayMarks(); 
+
+        int total = 0;
+        for (int i = 0; i < 5; i++) {
+            total += marks[i];
+        }
+        double percentage = (total / 500.0) * 100;
+
+        cout << "Total Marks: " << total << endl;
+        cout << "Percentage: " << percentage << "%" << endl;
+    }
+};
+
+int main() {
+    Result studentResult;
+
+    studentResult.readData();
+    studentResult.readMarks();
+
+    cout << "\n--- Student Result ---\n";
+    studentResult.displayResult();
+
+    return 0;
+}
+QUESTION-4
+#include <iostream>
+#include <string>
+using namespace std;
+
+class Person {
+private:
+    string name;
+    int age;
+
+public:
+    
+    friend istream& operator>>(istream& in, Person& p);
+    friend ostream& operator<<(ostream& out, const Person& p);
+};
+
+
+istream& operator>>(istream& in, Person& p) {
+    cout << "Enter name: ";
+    getline(in, p.name);
+    cout << "Enter age: ";
+    in >> p.age;
+    in.ignore();  // Clear newline from input buffer
+    return in;
+}
+
+
+ostream& operator<<(ostream& out, const Person& p) {
+    out << "Name: " << p.name << ", Age: " << p.age;
+    return out;
+}
+
+int main() {
+    Person person;
+    cin >> person;          // Use overloaded >> to input data
+    cout << person << endl; // Use overloaded << to display data
+    return 0;
+}
+
+QUESTION-5
+#include <iostream>
+using namespace std;
+
+class Height {
+private:
+    int meter;
+    int centimeter;
+
+public:
+    Height(int m = 0, int cm = 0) : meter(m), centimeter(cm) {}
+
+    void display() const {
+        cout << meter << " meter(s) and " << centimeter << " centimeter(s)" << endl;
+    }
+
+    
+    friend Height operator+(const Height& h1, const Height& h2);
+};
+
+
+Height operator+(const Height& h1, const Height& h2) {
+    int totalCm = h1.centimeter + h2.centimeter;
+    int totalMeter = h1.meter + h2.meter + totalCm / 100; // carry over cm to meter
+    totalCm = totalCm % 100;
+
+    return Height(totalMeter, totalCm);
+}
+
+int main() {
+    Height h1(2, 75);
+    Height h2(3, 50);
+
+    cout << "Height 1: ";
+    h1.display();
+
+    cout << "Height 2: ";
+    h2.display();
+
+    Height h3 = h1 + h2;
+    cout << "Sum of heights: ";
+    h3.display();
+
+    return 0;
+}
+QUESTION-6
+#include <iostream>
+#include <iomanip>  // For setw and setfill
+using namespace std;
+
+class Time {
+private:
+    int hours;
+    int minutes;
+    int seconds;
+
+public:
+
+    Time(int h = 0, int m = 0, int s = 0) : hours(h), minutes(m), seconds(s) {}
+
+
+    void inputTime() {
+        cout << "Enter hours: ";
+        cin >> hours;
+        cout << "Enter minutes: ";
+        cin >> minutes;
+        cout << "Enter seconds: ";
+        cin >> seconds;
+    }
+
+    
+    void displayTime() const {
+        cout << setw(2) << setfill('0') << hours << ":"
+             << setw(2) << setfill('0') << minutes << ":"
+             << setw(2) << setfill('0') << seconds << endl;
+    }
+
+    Time operator+(const Time& t) const {
+        Time temp;
+        temp.seconds = seconds + t.seconds;
+        temp.minutes = minutes + t.minutes + temp.seconds / 60;
+        temp.seconds %= 60;
+
+        temp.hours = hours + t.hours + temp.minutes / 60;
+        temp.minutes %= 60;
+
+        
+        return temp;
+    }
+};
+
+int main() {
+    Time t1, t2, sum;
+
+    cout << "Enter first time period:\n";
+    t1.inputTime();
+
+    cout << "\nEnter second time period:\n";
+    t2.inputTime();
+
+    sum = t1 + t2;
+
+    cout << "\nSum of the two times is: ";
+    sum.displayTime();
+
+    return 0;
+}
+
+QUESTION-7
+#include <iostream>
+using namespace std;
+
+class Distance {
+private:
+    int feet;
+    int inches;
+
+public:
+    Distance(int f = 0, int i = 0) : feet(f), inches(i) {}
+
+
+    void display() const {
+        cout << feet << " feet " << inches << " inches";
+    }
+
+   
+    bool operator<=(const Distance& d) const {
+     
+        int totalInches1 = feet * 12 + inches;
+        int totalInches2 = d.feet * 12 + d.inches;
+        return totalInches1 <= totalInches2;
+    }
+};
+
+int main() {
+    Distance d1(5, 8);  // 5 feet 8 inches
+    Distance d2(6, 2);  // 6 feet 2 inches
+
+    cout << "Distance 1: ";
+    d1.display();
+    cout << "\nDistance 2: ";
+    d2.display();
+    cout << "\n";
+
+    if (d1 <= d2)
+        cout << "Distance 1 is less than or equal to Distance 2\n";
+    else
+        cout << "Distance 1 is greater than Distance 2\n";
+
+    return 0;
+}
+
+QUESTION-8
+#include <iostream>
+using namespace std;
+
+class Kilometer; // Forward declaration
+
+class Feet {
+private:
+    int ft;
+    int inch;
+
+public:
+    Feet(int f = 0, int i = 0) : ft(f), inch(i) {}
+
+    void input() {
+        cout << "Enter feet: ";
+        cin >> ft;
+        cout << "Enter inches: ";
+        cin >> inch;
+    }
+
+    void display() const {
+        cout << ft << " ft " << inch << " inch";
+    }
+
+    // Grant Kilometer access to Feet's private members
+    friend class Kilometer;
+};
+
+class Kilometer {
+private:
+    int km;
+    int m;
+
+public:
+    Kilometer(int k = 0, int me = 0) : km(k), m(me) {}
+
+ r
+    Kilometer(const Feet& f) {
+     
+        int totalInches = f.ft * 12 + f.inch;
+
+     
+        double totalFeet = totalInches / 12.0;
+
+    
+        double totalKm = totalFeet / 3280.0;
+
+        km = static_cast<int>(totalKm);              // integer kilometers
+        m = static_cast<int>((totalKm - km) * 1000); // remaining meters
+    }
+
+    void display() const {
+        cout << km << " km " << m << " m";
+    }
+};
+
+int main() {
+    Feet f;
+    f.input();
+
+    Kilometer k = f; 
+
+    cout << "\nFeet: ";
+    f.display();
+
+    cout << "\nEquivalent Kilometer: ";
+    k.display();
+    cout << endl;
+
+    return 0;
+}
+
+QUESTION-9
+#include <iostream>
+using namespace std;
+
+class Rupees; // Forward declaration
+
+class Dollar {
+private:
+    int dol;
+    int cent;
+
+public:
+    Dollar(int d = 0, int c = 0) : dol(d), cent(c) {}
+
+    void input() {
+        cout << "Enter dollars: ";
+        cin >> dol;
+        cout << "Enter cents: ";
+        cin >> cent;
+    }
+
+    void display() const {
+        cout << dol << " dollars and " << cent << " cents";
+    }
+
+   
+    operator Rupees() const;
+};
+
+class Rupees {
+private:
+    int rs;
+    int paisa;
+
+public:
+    Rupees(int r = 0, int p = 0) : rs(r), paisa(p) {}
+
+    void display() const {
+        cout << rs << " rupees and " << paisa << " paisa";
+    }
+};
+
+
+Dollar::operator Rupees() const {
+    Rupees temp;
+
+    int totalCents = dol * 100 + cent;
+
+  
+    int totalPaisa = totalCents * 80;
+
+    temp.rs = totalPaisa / 100;
+    temp.paisa = totalPaisa % 100;
+
+    return temp;
+}
+
+int main() {
+    Dollar d;
+    d.input();
+
+    cout << "\nDollar amount: ";
+    d.display();
+
+    Rupees r = d;  
+
+    cout << "\nEquivalent Rupees amount: ";
+    r.display();
+    cout << endl;
+
+    return 0;
+}
+
+
+
+
+
+
