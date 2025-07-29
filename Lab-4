@@ -1,0 +1,427 @@
+QUESTION-1
+#include <iostream>
+#include <cmath> 
+using namespace std;
+
+class Polygon {
+protected:
+    double width;
+    double height;
+
+public:
+    Polygon(double w, double h) : width(w), height(h) {}
+};
+
+class Rectangle : public Polygon {
+public:
+    Rectangle(double w, double h) : Polygon(w, h) {}
+
+    double calculate_area() {
+        return width * height;
+    }
+
+    double calculate_perimeter() {
+        return 2 * (width + height);
+    }
+};
+
+class Triangle : public Polygon {
+public:
+    Triangle(double w, double h) : Polygon(w, h) {}
+
+    double calculate_area() {
+        return 0.5 * width * height;
+    }
+
+    double calculate_perimeter() {
+        double hypotenuse = sqrt(width * width + height * height);
+        return width + height + hypotenuse;
+    }
+};
+
+int main() {
+    Rectangle rect(5, 10);
+    cout << "Rectangle Area: " << rect.calculate_area() << endl;
+    cout << "Rectangle Perimeter: " << rect.calculate_perimeter() << endl;
+
+    Triangle tri(3, 4);
+    cout << "Triangle Area: " << tri.calculate_area() << endl;
+    cout << "Triangle Perimeter: " << tri.calculate_perimeter() << endl;
+
+    return 0;
+}
+Question-3
+#include <iostream>
+#include <string>
+using namespace std;
+
+
+class Student {
+protected:
+    string name;
+    int roll_no;
+
+public:
+    void readStudentData() {
+        cout << "Enter student name: ";
+        getline(cin, name);
+        cout << "Enter roll number: ";
+        cin >> roll_no;
+        cin.ignore(); // Clear the newline from the buffer
+    }
+
+    void displayStudentData() const {
+        cout << "Name: " << name << endl;
+        cout << "Roll No: " << roll_no << endl;
+    }
+};
+
+// Class 2: Exam (inherits Student)
+class Exam : public Student {
+protected:
+    float marks[5];
+
+public:
+    void readMarks() {
+        cout << "Enter marks for 5 subjects:\n";
+        for (int i = 0; i < 5; ++i) {
+            cout << "Subject " << i + 1 << ": ";
+            cin >> marks[i];
+        }
+        cin.ignore(); // Clear newline after last input
+    }
+
+    void displayMarks() const {
+        cout << "Marks in 5 subjects:\n";
+        for (int i = 0; i < 5; ++i) {
+            cout << "Subject " << i + 1 << ": " << marks[i] << endl;
+        }
+    }
+};
+
+
+class Result : public Exam {
+public:
+    void displayResult() const {
+        float total = 0;
+        for (int i = 0; i < 5; ++i) {
+            total += marks[i];
+        }
+        float percentage = total / 5.0;
+
+        cout << "\n--- Student Result ---\n";
+        displayStudentData();
+        displayMarks();
+        cout << "Total Marks: " << total << endl;
+        cout << "Percentage: " << percentage << "%" << endl;
+    }
+};
+
+
+int main() {
+    Result student;
+    student.readStudentData();
+    student.readMarks();
+    student.displayResult();
+    return 0;
+}
+
+QUESTION-4
+#include <iostream>
+#include <string>
+using namespace std;
+
+
+class Account {
+protected:
+    string customer_name;
+    string account_number;
+    string account_type;
+    double balance;
+
+public:
+    Account(string name, string acc_num, string acc_type, double initial_balance = 0.0)
+        : customer_name(name), account_number(acc_num), account_type(acc_type), balance(initial_balance) {}
+
+    
+    void displayBalance() const {
+        cout << "Customer Name: " << customer_name << endl;
+        cout << "Account Number: " << account_number << endl;
+        cout << "Account Type: " << account_type << endl;
+        cout << "Current Balance: $" << balance << endl;
+    }
+
+  
+    virtual void deposit(double amount) {
+        if (amount > 0) {
+            balance += amount;
+            cout << "Deposited $" << amount << " successfully." << endl;
+        } else {
+            cout << "Invalid deposit amount." << endl;
+        }
+    }
+
+    virtual bool withdraw(double amount) {
+        if (amount > 0 && amount <= balance) {
+            balance -= amount;
+            cout << "Withdrawn $" << amount << " successfully." << endl;
+            return true;
+        } else {
+            cout << "Insufficient balance or invalid amount." << endl;
+            return false;
+        }
+    }
+};
+
+
+class Saving_account : public Account {
+    const double min_balance = 500; 
+
+public:
+    Saving_account(string name, string acc_num, double initial_balance = 0.0)
+        : Account(name, acc_num, "Savings", initial_balance) {}
+
+   
+    bool withdraw(double amount) override {
+        if (amount <= 0) {
+            cout << "Invalid withdrawal amount." << endl;
+            return false;
+        }
+        if (balance - amount < min_balance) {
+            cout << "Cannot withdraw. Minimum balance of $" << min_balance << " must be maintained." << endl;
+            return false;
+        }
+        return Account::withdraw(amount);
+    }
+};
+
+
+class Current_account : public Account {
+    const double overdraft_limit = 1000;  // Allow overdraft up to this limit
+
+public:
+    Current_account(string name, string acc_num, double initial_balance = 0.0)
+        : Account(name, acc_num, "Current", initial_balance) {}
+
+    
+    bool withdraw(double amount) override {
+        if (amount <= 0) {
+            cout << "Invalid withdrawal amount." << endl;
+            return false;
+        }
+        if (balance - amount < -overdraft_limit) {
+            cout << "Withdrawal denied. Overdraft limit of $" << overdraft_limit << " exceeded." << endl;
+            return false;
+        }
+        balance -= amount;
+        cout << "Withdrawn $" << amount << " successfully." << endl;
+        return true;
+    }
+};
+
+
+int main() {
+    Saving_account saver("Alice", "SAV123", 1000);
+    Current_account current("Bob", "CUR456", 500);
+
+    cout << "--- Saving Account ---" << endl;
+    saver.displayBalance();
+    saver.deposit(200);
+    saver.withdraw(600);  
+    saver.withdraw(200);  
+    saver.displayBalance();
+
+    cout << "\n--- Current Account ---" << endl;
+    current.displayBalance();
+    current.deposit(300);
+    current.withdraw(1200); 
+    current.withdraw(700);  
+    current.displayBalance();
+
+    return 0;
+}
+QUESTION-5
+#include <iostream>
+#include <string>
+using namespace std;
+
+// Class 1: Author
+class Author {
+private:
+    string name;
+    string degree;
+
+public:
+    void readAuthor() {
+        cout << "Enter Author Name: ";
+        getline(cin, name);
+        cout << "Enter Author Degree: ";
+        getline(cin, degree);
+    }
+
+    void displayAuthor() const {
+        cout << "Author Name: " << name << endl;
+        cout << "Author Degree: " << degree << endl;
+    }
+};
+
+// Class 2: Publication
+class Publication {
+private:
+    string name;
+    string location;
+
+public:
+    void readPublication() {
+        cout << "Enter Publication Name: ";
+        getline(cin, name);
+        cout << "Enter Publication Location: ";
+        getline(cin, location);
+    }
+
+    void displayPublication() const {
+        cout << "Publication Name: " << name << endl;
+        cout << "Publication Location: " << location << endl;
+    }
+};
+
+// Class 3: Book
+class Book {
+private:
+    string book_title;
+    int no_of_pages;
+    float price;
+    Author author;
+    Publication publication;
+
+public:
+    void readBookDetails() {
+        cout << "Enter Book Title: ";
+        getline(cin, book_title);
+        cout << "Enter Number of Pages: ";
+        cin >> no_of_pages;
+        cout << "Enter Price: ";
+        cin >> price;
+        cin.ignore(); // To clear the newline character
+
+        cout << "--- Enter Author Details ---\n";
+        author.readAuthor();
+
+        cout << "--- Enter Publication Details ---\n";
+        publication.readPublication();
+    }
+
+    void displayBookDetails() const {
+        cout << "\n--- Book Information ---\n";
+        cout << "Book Title: " << book_title << endl;
+        cout << "Number of Pages: " << no_of_pages << endl;
+        cout << "Price: ₹" << price << endl;
+
+        cout << "\n--- Author Information ---\n";
+        author.displayAuthor();
+
+        cout << "\n--- Publication Information ---\n";
+        publication.displayPublication();
+    }
+};
+
+
+int main() {
+    Book myBook;
+    myBook.readBookDetails();
+    myBook.displayBookDetails();
+
+    return 0;
+}
+
+QUESTION-6
+#include <iostream>
+using namespace std;
+
+// Base class Patient
+class Patient {
+protected:
+    int patientId;
+    string name;
+public:
+    void getPatientData() {
+        cout << "Enter Patient ID: ";
+        cin >> patientId;
+        cout << "Enter Patient Name: ";
+        cin >> name;
+    }
+    void displayPatientData() {
+        cout << "Patient ID: " << patientId << endl;
+        cout << "Patient Name: " << name << endl;
+    }
+};
+
+// Derived class Ward
+class Ward : public Patient {
+protected:
+    string wardType;
+    int bedNo;
+public:
+    void getWardData() {
+        getPatientData();
+        cout << "Enter Ward Type: ";
+        cin >> wardType;
+        cout << "Enter Bed Number: ";
+        cin >> bedNo;
+    }
+    void displayWardData() {
+        displayPatientData();
+        cout << "Ward Type: " << wardType << endl;
+        cout << "Bed Number: " << bedNo << endl;
+    }
+};
+
+// Derived class Payment
+class Payment : public Ward {
+private:
+    int billNo;
+    float totalAmount;
+public:
+    void getPaymentData() {
+        getWardData();
+        cout << "Enter Bill Number: ";
+        cin >> billNo;
+        cout << "Enter Total Amount: ";
+        cin >> totalAmount;
+    }
+    void displayPaymentData() {
+        displayWardData();
+        cout << "Bill Number: " << billNo << endl;
+        cout << "Total Amount: " << totalAmount << endl;
+    }
+};
+
+// Main function
+int main() {
+    Payment p;
+
+    cout << "---Enter Patient Payment Details---" << endl;
+    p.getPaymentData();
+
+    cout << "\n---Displaying Patient Payment Details---" << endl;
+    p.displayPaymentData();
+
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
