@@ -1,0 +1,413 @@
+QUESTION-1
+#include <iostream>
+using namespace std;
+
+class Largest {
+private:
+    int num1, num2;
+
+public:
+
+    void readNumbers() {
+        cout << "Enter first number: ";
+        cin >> num1;
+        cout << "Enter second number: ";
+        cin >> num2;
+    }
+
+    void displayLargest() const {
+        if (num1 > num2)
+            cout << "Largest number is: " << num1 << endl;
+        else if (num2 > num1)
+            cout << "Largest number is: " << num2 << endl;
+        else
+            cout << "Both numbers are equal: " << num1 << endl;
+    }
+};
+
+int main() {
+    Largest obj;
+    obj.readNumbers();
+    obj.displayLargest();
+
+    return 0;
+}
+QUESTION-2
+#include <iostream>
+using namespace std;
+
+class Temperature {
+private:
+    float fahrenheit;
+    float celsius;
+
+public:
+    void getdata() {
+        cout << "Enter temperature in Fahrenheit: ";
+        cin >> fahrenheit;
+    }
+
+    void display() {
+        celsius = (fahrenheit - 32) * 5.0 / 9.0;
+        cout << "Temperature in Celsius: " << celsius << "°C" << endl;
+    }
+};
+
+int main() {
+    Temperature temp;
+    temp.getdata();
+    temp.display();
+    return 0;
+}
+QUESTION-3
+#include <iostream>
+using namespace std;
+
+class Temperature {
+private:
+    float fahrenheit;
+    float celsius;
+
+public:
+    void getdata() {
+        cout << "Enter temperature in Fahrenheit: ";
+        cin >> fahrenheit;
+    }
+
+    void display() {
+        celsius = (fahrenheit - 32) * 5.0 / 9.0;
+        cout << "Temperature in Celsius: " << celsius << "°C" << endl;
+    }
+};
+
+int main() {
+    Temperature temp;
+    temp.getdata();
+    temp.display();
+    return 0;
+}
+
+QUESTION-4
+#include <iostream>
+using namespace std;
+
+class Student {
+private:
+    int id;
+    float marks;
+
+public:
+    // Default constructor
+    Student() {
+        id = 0;
+        marks = 0.0;
+    }
+
+    // Parameterized constructor
+    Student(int i, float m) {
+        id = i;
+        marks = m;
+    }
+
+    // Copy constructor
+    Student(const Student& s) {
+        id = s.id;
+        marks = s.marks;
+    }
+
+    // Function to display student info
+    void display() const {
+        cout << "Student ID: " << id << endl;
+        cout << "Marks: " << marks << endl;
+    }
+};
+
+int main() {
+    Student s1;               
+    Student s2(101, 95.5);    
+    Student s3 = s2;
+    cout << "Student 1:\n";
+    s1.display();
+
+    cout << "\nStudent 2:\n";
+    s2.display();
+
+    cout << "\nStudent 3 (copy of Student 2):\n";
+    s3.display();
+
+    return 0;
+}
+QUESTION-5
+#include <iostream>
+using namespace std;
+
+class Distance {
+private:
+    int feet;
+    int inches;
+
+public:
+    Distance(int f = 0, int i = 0) : feet(f), inches(i) {}
+
+   
+    void input() {
+        cout << "Enter feet: ";
+        cin >> feet;
+        cout << "Enter inches: ";
+        cin >> inches;
+    }
+
+
+    Distance add(const Distance& d) const {
+        int totalInches = inches + d.inches;
+        int extraFeet = totalInches / 12;
+        int remainingInches = totalInches % 12;
+
+        int totalFeet = feet + d.feet + extraFeet;
+
+        return Distance(totalFeet, remainingInches);
+    }
+
+  nce
+    void display() const {
+        cout << feet << " feet " << inches << " inches" << endl;
+    }
+};
+
+int main() {
+    Distance d1, d2, sum;
+
+    cout << "Enter first distance:\n";
+    d1.input();
+
+    cout << "Enter second distance:\n";
+    d2.input();
+
+    sum = d1.add(d2);
+
+    cout << "\nSum of distances: ";
+    sum.display();
+
+    return 0;
+}
+
+QUESTION-6
+#include <iostream>
+using namespace std;
+
+class Account {
+private:
+    int acc_no;
+    double balance;
+    static double min_balance;
+
+public:
+   
+    void read() {
+        cout << "Enter account number: ";
+        cin >> acc_no;
+        cout << "Enter balance: ";
+        cin >> balance;
+    }
+
+   s
+    void display() const {
+        cout << "Account Number: " << acc_no << endl;
+        cout << "Balance: $" << balance << endl;
+    }
+
+  
+    static void displayMinBalance() {
+        cout << "Minimum Balance required: $" << min_balance << endl;
+    }
+};
+
+
+double Account::min_balance = 500.0;  // example minimum balance
+
+int main() {
+    Account accounts[5];
+
+    cout << "Enter details for 5 accounts:\n";
+    for (int i = 0; i < 5; i++) {
+        cout << "\nAccount " << (i + 1) << ":\n";
+        accounts[i].read();
+    }
+
+    cout << "\nDetails of all accounts:\n";
+    for (int i = 0; i < 5; i++) {
+        cout << "\nAccount " << (i + 1) << ":\n";
+        accounts[i].display();
+    }
+
+  
+    Account::displayMinBalance();
+
+    return 0;
+}
+
+QUESTION-7
+#include <iostream>
+#include <iomanip> 
+using namespace std;
+
+class TicketBooth {
+private:
+    static int peopleVisited;     
+    static int ticketsSold;     
+    static double totalAmount;    
+
+    static constexpr double ticketPrice = 2.50;
+
+public:
+   
+    TicketBooth() {}
+
+  
+    static void incrementVisitorsOnly() {
+        peopleVisited++;
+    }
+
+   
+    static void sellTicket() {
+        peopleVisited++;
+        ticketsSold++;
+        totalAmount += ticketPrice;
+    }
+
+    
+    static void displayData() {
+        cout << "Number of people visited: " << peopleVisited << endl;
+        cout << "Total tickets sold: " << ticketsSold << endl;
+        cout << fixed << setprecision(2);
+        cout << "Total amount collected: Rs " << totalAmount << endl;
+    }
+};
+
+
+int TicketBooth::peopleVisited = 0;
+int TicketBooth::ticketsSold = 0;
+double TicketBooth::totalAmount = 0.0;
+
+int main() {
+ 
+    TicketBooth::incrementVisitorsOnly();  
+    TicketBooth::sellTicket();              
+    TicketBooth::sellTicket();
+    TicketBooth::incrementVisitorsOnly();
+    TicketBooth::sellTicket();
+
+    // Display summary
+    TicketBooth::displayData();
+
+    return 0;
+}
+
+QUESTION-8
+#include <iostream>
+using namespace std;
+
+class Time;  
+
+class Distance {
+private:
+    float distance;
+
+public:
+    Distance(float d = 0) : distance(d) {}
+
+    friend float calculateVelocity(const Distance&, const Time&);
+};
+
+class Time {
+private:
+    float time;
+
+public:
+    Time(float t = 0) : time(t) {}
+
+    friend float calculateVelocity(const Distance&, const Time&);
+};
+
+
+float calculateVelocity(const Distance& d, const Time& t) {
+    if (t.time == 0) {
+        cout << "Time cannot be zero!" << endl;
+        return 0;
+    }
+    return d.distance / t.time;
+}
+
+int main() {
+    float d_val, t_val;
+
+    cout << "Enter distance (meters): ";
+    cin >> d_val;
+
+    cout << "Enter time (seconds): ";
+    cin >> t_val;
+
+    Distance d(d_val);
+    Time t(t_val);
+
+    float velocity = calculateVelocity(d, t);
+    if (velocity != 0) {
+        cout << "Velocity = " << velocity << " meters/second" << endl;
+    }
+
+    return 0;
+}
+
+QUESTION-9
+#include <iostream>
+using namespace std;
+
+class FriendclassB; 
+class FriendclassA {
+private:
+    int a;
+    int b;
+
+public:
+  
+    FriendclassA(int val) : a(val), b(0) {}
+
+    
+    void getdata() {
+        cout << "Enter value for b: ";
+        cin >> b;
+    }
+
+   
+    friend class FriendclassB;
+};
+
+class FriendclassB {
+public:
+   
+    void performOperations(const FriendclassA& obj) {
+        cout << "a + b = " << (obj.a + obj.b) << endl;
+        cout << "a - b = " << (obj.a - obj.b) << endl;
+        cout << "a * b = " << (obj.a * obj.b) << endl;
+
+        if (obj.b != 0)
+            cout << "a / b = " << (obj.a / obj.b) << endl;
+        else
+            cout << "Division by zero not allowed!" << endl;
+    }
+};
+
+int main() {
+    int a_val;
+
+    cout << "Enter value for a (to initialize): ";
+    cin >> a_val;
+
+    FriendclassA objA(a_val);
+    objA.getdata();
+
+    FriendclassB objB;
+    objB.performOperations(objA);
+
+    return 0;
+}
